@@ -1,0 +1,96 @@
+/*Jim and David are playing a game. In this game both of them are provided with the stack of N numbers. The Strategy to play the game isJim and David
+pick an element from their stacks. Method to be followed to play the game is:
+
+a. If the number picked by Jim is bigger than David’s number,displays 1. David removes the number that was picked from his stack.
+
+b. If the number picked by Jim is smaller than David’s number,displays 2. Jim removes the number that was picked from his stack.
+
+c. If both have the same number,displays 0. Both Jim and David remove the number that was picked from their stack.
+
+The game ends when at least one of them has no more elements to be picked.Apply PSF and write modular C program tocheck whose stack has elements remaining.*/
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX_SIZE 100
+
+int jimStack[MAX_SIZE];
+int davidStack[MAX_SIZE];
+int jimTop = -1;
+int davidTop = -1;
+
+int isEmpty(int top) {
+    return top == -1;
+}
+
+int isFull(int top) {
+    return top == MAX_SIZE - 1;
+}
+
+void push(int stack[], int* top, int element) {
+    if (isFull(*top)) {
+        printf("Stack overflow\n");
+        return;
+    }
+    stack[++(*top)] = element;
+}
+
+int pop(int stack[], int* top) {
+    if (isEmpty(*top)) {
+        printf("Stack underflow\n");
+        return -1;
+    }
+    return stack[(*top)--];
+}
+
+void printRemainingPerson() {
+    if (isEmpty(jimTop) && isEmpty(davidTop)) {
+        printf("Tie\n");
+    } else if (isEmpty(jimTop)) {
+        printf("David\n");
+    } else {
+        printf("Jim\n");
+    }
+}
+
+void playGame() {
+    while (!isEmpty(jimTop) && !isEmpty(davidTop)) {
+        int jimNumber = jimStack[jimTop];
+        int davidNumber = davidStack[davidTop];
+
+        if (jimNumber > davidNumber) {
+            printf("1 ");
+            pop(davidStack, &davidTop);
+        } else if (jimNumber < davidNumber) {
+            printf("2 ");
+            pop(jimStack, &jimTop);
+        } else {
+            printf("0 ");
+            pop(jimStack, &jimTop);
+            pop(davidStack, &davidTop);
+        }
+    }
+
+    printRemainingPerson();
+}
+
+int main() {
+    int n;
+    printf("Enter the number of elements: ");
+    scanf("%d", &n);
+
+    printf("Enter the elements of Jim's stack:\n");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &jimStack[i]);
+        jimTop++;
+    }
+
+    printf("Enter the elements of David's stack:\n");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &davidStack[i]);
+        davidTop++;
+    }
+
+    printf("Sequence: ");
+    playGame();
+
+    return 0;
+}
