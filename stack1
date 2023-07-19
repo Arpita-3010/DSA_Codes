@@ -1,0 +1,96 @@
+/*Nancy plays a numbers crush game in her leisure time. She follows a certain pattern to crush the numbers. She has a number with her in the beginning.
+She checks with the next number she gets. If both the numbers are same she crushes both the numbers. If Nancy has more numbers with her, she checks the
+next number with the most recent number she has. If again the numbers are same, she crushes both the numbers. At any point of time, if both the numbers
+are not same, she keeps the next number with her and continues checking. If Nancy is able to crush all the numbers, then she proceeds to next level to
+crush next set of numbers. If she is not able to crush all the numbers, she shows the remaining numbers.*/
+#include <stdio.h>
+#include <stdlib.h>
+
+#define SIZE 100
+
+struct stack {
+    int data[SIZE];
+    int top;
+};
+
+void push(struct stack *sptr, int num);
+void pop(struct stack *sptr);
+void display(struct stack *sptr);
+
+void crushNumbers(int arr[], int n) {
+    struct stack s;
+    struct stack *sptr = &s;
+    sptr->top = -1;
+
+    int i;
+    for (i = 0; i < n; i++) {
+        if (sptr->top == -1 || arr[i] != sptr->data[sptr->top]) {
+            push(sptr, arr[i]);
+        } else {
+            pop(sptr);
+        }
+    }
+
+    if (sptr->top == -1) {
+        printf("Proceed to next level\n");
+    } else {
+        //printf("Remaining numbers (in reverse order):\n");
+        display(sptr);
+    }
+}
+
+void push(struct stack *sptr, int num) {
+    if (sptr->top == SIZE - 1) {
+        printf("Stack overflow\n");
+        return;
+    }
+
+    sptr->top++;
+    sptr->data[sptr->top] = num;
+}
+
+void pop(struct stack *sptr) {
+    if (sptr->top == -1) {
+        printf("Stack underflow\n");
+        return;
+    }
+
+    sptr->top--;
+}
+
+void display(struct stack *sptr) {
+    if (sptr->top == -1) {
+        printf("Stack is empty\n");
+        return;
+    }
+
+    int i;
+    for (i = sptr->top; i >= 0; i--) {
+        printf("%d\n", sptr->data[i]);
+    }
+}
+
+int main() {
+    int n, i;
+
+    //printf("Enter the number of elements: ");
+    scanf("%d", &n);
+
+    if (n <= 1) {
+        printf("Invalid input. Number of elements should be more than 1.\n");
+        return 0;
+    }
+
+    int *arr = (int *) malloc(n * sizeof(int));
+
+   // printf("Enter the numbers: ");
+    for (i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    crushNumbers(arr, n);
+
+    free(arr);
+
+    return 0;
+}
